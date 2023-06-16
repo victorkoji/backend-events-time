@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  web:
+    container_name: events_api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    depends_on:
+      - database
+    working_dir: /app
+    volumes:
+      - ./migrations:/app/migrations
+      - ./src:/app/src
+    environment:
+      FLASK_ENV: development
+      DB_HOST: database
+
+  database:
+    container_name: database
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - 5432:5432
