@@ -3,3 +3,5 @@ requests==2.26.0
 python-dotenv==1.0.0
 orator==0.9.9
 psycopg2-binary==2.9.6
+pylint==2.17.4
+autopep8==2.0.2

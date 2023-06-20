@@ -9,11 +9,13 @@ build:
 
 up-silent:
 	docker compose up -d && \
-	make copy-folder-packages
+	make copy-folder-packages && \
+	make db-migrate
 
 up:
 	docker-compose up -d && \
 	make copy-folder-packages && \
+	make db-migrate && \
 	docker-compose logs -f web
 
 up-machine:

@@ -1,6 +1,7 @@
+import os
+
 from orator import DatabaseManager, Model
 from dotenv import load_dotenv
-import os
 
 load_dotenv('.env.development')
 
@@ -15,5 +16,5 @@ DATABASES = {
     }
 }
 
-db = DatabaseManager(DATABASES)
-Model.set_connection_resolver(db)
+database = DatabaseManager(DATABASES)
+Model.set_connection_resolver(database)

@@ -1,45 +1,58 @@
-from flask import jsonify, request, Blueprint
-from repositories.product_repository import ProductRepository
+from flask import Blueprint, jsonify, request
+from services.product_service import ProductService
 from models.product import Product
 
-# Criar a blueprint
-product_routes = Blueprint('product_routes', __name__)
 
-product_repository = ProductRepository()
+class ProductController:
+    def __init__(self, app):
+        self.product_routes = Blueprint('product_routes', __name__)
+        self.product_service = ProductService()
 
-@product_routes.route('/products', methods=['GET'])
-def get_items():
-    items = product_repository.get_all_items()
-    item_data = [{'id': item.id} for item in items]
-    return jsonify(item_data)
+        self.register_routes()
+        app.register_blueprint(self.product_routes)
 
-@product_routes.route('/products/<int:item_id>', methods=['GET'])
-def get_item(item_id):
-    item = product_repository.get_item(item_id)
-    if item:
-        item_data = {'id': item.id, 'name': item.name}
-        return jsonify(item_data)
-    else:
-        return jsonify({'error': 'Product not found'}), 404
+    def register_routes(self):
+        self.product_routes.route(
+            '/products', methods=['GET'])(self.get_products)
+        self.product_routes.route(
+            '/products/<int:product_id>', methods=['GET'])(self.get_product)
+        self.product_routes.route(
+            '/products', methods=['POST'])(self.add_product)
+        self.product_routes.route(
+            '/products/<int:product_id>', methods=['PUT'])(self.update_product)
+        self.product_routes.route(
+            '/products/<int:product_id>', methods=['DELETE'])(self.delete_product)
 
-@product_routes.route('/products', methods=['POST'])
-def add_item():
-    data = request.get_json()
-    item = Product(data['id'], data['name'])
-    product_repository.add_item(item)
-    return jsonify({'message': 'Product added successfully'}), 201
+    def get_products(self):
+        products = self.product_service.get_all()
+        product_data = [{'id': product.id, 'name': product.name}
+                        for product in products]
+        return jsonify(product_data)
 
-@product_routes.route('/products/<int:item_id>', methods=['PUT'])
-def update_item(item_id):
-    data = request.get_json()
-    if product_repository.update_item(item_id, data['name']):
-        return jsonify({'message': 'Product updated successfully'})
-    else:
-        return jsonify({'error': 'Product not found'}), 404
+    def get_product(self, product_id):
+        product = self.product_service.get_product(product_id)
+        if product:
+            product_data = {'id': product.id, 'name': product.name}
+            return jsonify(product_data)
+        else:
+            return jsonify({'error': 'Product not found'}), 404
 
-@product_routes.route('/products/<int:item_id>', methods=['DELETE'])
-def delete_item(item_id):
-    if product_repository.delete_item(item_id):
-        return jsonify({'message': 'Product deleted successfully'})
-    else:
-        return jsonify({'error': 'Product not found'}), 404
+    def add_product(self):
+        data = request.get_json()
+        product = Product()
+        product.name = data['name']
+        self.product_service.add_product(product)
+        return jsonify({'message': 'Product added successfully'}), 201
+
+    def update_product(self, product_id):
+        data = request.get_json()
+        if self.product_service.update_product(product_id, data['name']):
+            return jsonify({'message': 'Product updated successfully'})
+        else:
+            return jsonify({'error': 'Product not found'}), 404
+
+    def delete_product(self, product_id):
+        if self.product_service.delete_product(product_id):
+            return jsonify({'message': 'Product deleted successfully'})
+        else:
+            return jsonify({'error': 'Product not found'}), 404

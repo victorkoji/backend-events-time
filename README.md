@@ -1,11 +1,14 @@
 # backend-events-time
 
 ## Requisitos
-- Docker
-- Python
+- [Docker] (https://www.docker.com/)
+- [Python] (https://www.python.org/)
+- [Makefile] (https://sourceforge.net/projects/gnuwin32/files/latest/download)
+- [Dbeaver] (https://dbeaver.io/) ou outro gerenciador de banco
 
 ## Tecnologias
 - [Orator] (https://orator-orm.com/docs/0.9)
+- [Flask] (https://flask.palletsprojects.com/en/2.3.x/)
 
 ## Setup
 
