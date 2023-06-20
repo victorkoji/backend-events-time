@@ -29,3 +29,6 @@
 ```
 2. A API está rodando na porta 5000
   - Para testar, envie uma requisição para http://localhost:5000/
+
+## Rodar com Insomnia
+[![Run in Insomnia}](https://insomnia.rest/images/run.svg)](https://insomnia.rest/run/?label=Events%20Time%20API&uri=https%3A%2F%2Fgist.github.com%2FWallysonGalvao%2F948fd1381cc6c2f7a5f2b24fb698c5fc)
