@@ -1,0 +1,7 @@
+[pylint]
+disable = C0301 # Max caracteres for line
+disable = C0114 # Missing docstring in module
+disable = C0115 # Missing docstring in class member
+disable = C0116 # Missing docstring in method
+disable = W0707 # raise-missing-from
+

@@ -10,13 +10,15 @@ services:
       - 5000:5000
     depends_on:
       - database
+      - test_database
     working_dir: /app
     volumes:
-      - ./migrations:/app/migrations
-      - ./src:/app/src
+      - ./:/app
     environment:
       FLASK_ENV: development
       DB_HOST: database
+      DB_TEST_HOST: test_database
+      PYTHONPATH: /app/src
 
   database:
     container_name: database
@@ -27,3 +29,13 @@ services:
       POSTGRES_DB: postgres
     ports:
       - 5432:5432
+
+  test_database:
+    container_name: test_database
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: test_database
+    ports:
+      - 5433:5432

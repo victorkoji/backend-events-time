@@ -14,21 +14,21 @@
 
 ### Rodar com docker
 
-1. Rodar o projeto
+1. Rodar o projeto com:
+```
+  make up-silent db-migrate
+```
+Se quiser ver os logs, rodar o comando:
 ```
   make up
 ```
 2. A API está rodando na porta 5000
   - Para testar, envie uma requisição para http://localhost:5000/
 
-### Rodar na máquina
-
-1. Rodar o projeto
+### Rodar os testes
 ```
-  make up-machine
+  make test
 ```
-2. A API está rodando na porta 5000
-  - Para testar, envie uma requisição para http://localhost:5000/
 
 ## Rodar com Insomnia
 [![Run in Insomnia}](https://insomnia.rest/images/run.svg)](https://insomnia.rest/run/?label=Events%20Time%20API&uri=https%3A%2F%2Fraw.githubusercontent.com%2Fvictorkoji%2Fbackend-events-time%2Fmain%2Finsomnia_api.json%3Ftoken%3DGHSAT0AAAAAACD4GJIJDDBPLTDB7LZG3K2IZERBT4Q)
