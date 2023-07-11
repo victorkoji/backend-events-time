@@ -22,7 +22,7 @@ up:
 up-machine:
 	pip install -r requirements.txt && \
 	cd src/ && \
-	python -m flask run --host=0.0.0.0
+	uvicorn app:app --port 5000 --reload
 
 .PHONY: down
 down:
@@ -49,6 +49,14 @@ db-migrate:
 .PHONY: db-migrate-rollback
 db-migrate-rollback:
 	docker exec $(IMAGE_NAME_API) orator migrate:rollback -f -c $(DATABASE_PATH_CONFIG)
+
+.PHONY: db-seed
+db-seed:
+	docker exec $(IMAGE_NAME_API) orator db:seed -f -c $(DATABASE_PATH_CONFIG)
+
+.PHONY: db-create-seed
+db-create-seed:
+	docker exec $(IMAGE_NAME_API) make:seed $(NAME)
 
 .PHONY: db-shell
 db-shell:

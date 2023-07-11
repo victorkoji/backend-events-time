@@ -1,42 +1,51 @@
-from models.product import Product
-from exceptions.product_exception import DatabaseError
+from models.product import ProductModel
+from exceptions.custom_exception import DatabaseError
 
 
 class ProductService:
     def __init__(self):
         pass
 
-    def get_all(self):
-        return Product.all()
+    def get(self, id=None):
+        products = None
 
-    def get_product(self, id):
-        return Product.find(id)
+        if id:
+            products = ProductModel.find(id)
+        else:
+            products = ProductModel.all()
 
-    def add_product(self, data):
+        return products
+
+    def add(self, data):
         try:
-            product = Product()
-            product.name = data.name
-            product.save()
+            product = ProductModel()
+
+            for key, value in data.items():
+                setattr(product, key, value)
+
+            product.user_created = 1
+            product.user_modified = 1
+
+            return product.save()
         except:
-            raise DatabaseError('Não foi possível salvar o produto')
+            raise DatabaseError('Could not save!')
 
-        return product
-
-    def update_product(self, data):
+    def update(self, data):
         try:
-            product = Product.find(data.id)
-            product.name = data.name
-            product.save()
+            product = ProductModel.find(data['id'])
+
+            for key, value in data.items():
+                setattr(product, key, value)
+
+            return product.save()
         except:
-            raise DatabaseError('Não foi possível atualizar o produto')
+            raise DatabaseError('Could not update!')
 
-        return product
-
-    def delete_product(self, product_id):
+    def delete(self, product_id):
         try:
-            product = Product.find(product_id)
+            product = ProductModel.find(product_id)
             product.delete()
         except:
-            raise DatabaseError('Não foi possível remover o produto')
+            raise DatabaseError('Could not delete!')
 
         return product

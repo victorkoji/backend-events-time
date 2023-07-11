@@ -1,18 +1,21 @@
-from flask import Flask
-from controllers.product_controller import ProductController
+from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
 from config.database_config import database
+from controllers.__init__ import private_api_router, public_api_router
+from middlewares.auth_middleware import AuthMiddleware
 
-# Criar o aplicativo Flask
-app = Flask(__name__)
-
-product_controller = ProductController(app)
-
-
-@app.route('/')
-def hello_geek():
-    return '<h1>Hello from Flask & Docker</h1>'
+app = FastAPI()
+app.include_router(private_api_router, prefix="/api",
+                   dependencies=[Depends(AuthMiddleware())])
+app.include_router(public_api_router, prefix="/api")
 
 
-if __name__ == '__main__':
+@app.get("/")
+def hello():
+    return {"message": "Hello world, FastAPI!"}
+
+
+if __name__ == "__main__":
     app.db = database
-    app.run(debug=True)
+    uvicorn.run(app, host="0.0.0.0", port=5000)

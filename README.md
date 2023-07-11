@@ -16,7 +16,7 @@
 
 1. Rodar o projeto com:
 ```
-  make up-silent db-migrate
+  make up-silent db-migrate db-seed
 ```
 Se quiser ver os logs, rodar o comando:
 ```
