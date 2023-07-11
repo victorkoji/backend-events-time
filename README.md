@@ -31,4 +31,4 @@ Se quiser ver os logs, rodar o comando:
 ```
 
 ## Rodar com Insomnia
-[![Run in Insomnia}](https://insomnia.rest/images/run.svg)](https://insomnia.rest/run/?label=Events%20Time%20API&uri=https%3A%2F%2Fraw.githubusercontent.com%2Fvictorkoji%2Fbackend-events-time%2Fmain%2Finsomnia_api.json%3Ftoken%3DGHSAT0AAAAAACD4GJIJDDBPLTDB7LZG3K2IZERBT4Q)
+[![Run in Insomnia}](https://insomnia.rest/images/run.svg)](https://insomnia.rest/run/?label=Events%20Time&uri=https%3A%2F%2Fraw.githubusercontent.com%2Fvictorkoji%2Fbackend-events-time%2Fmain%2Finsomnia_api.json%3Ftoken%3DGHSAT0AAAAAACD4GJIJ4U4KNIYHG7OEZVXEZFMXDEQ)
