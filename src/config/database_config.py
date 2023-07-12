@@ -16,5 +16,5 @@ DATABASES = {
     }
 }
 
-database = DatabaseManager(DATABASES)
-Model.set_connection_resolver(database)
+db = DatabaseManager(DATABASES)
+Model.set_connection_resolver(db)

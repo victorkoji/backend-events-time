@@ -1,5 +1,7 @@
 from models.product import ProductModel
 from exceptions.custom_exception import DatabaseError
+import json
+from config.database_config import db
 
 
 class ProductService:
@@ -10,9 +12,13 @@ class ProductService:
         products = None
 
         if id:
-            products = ProductModel.find(id)
+            products = ProductModel.select(
+                '*', db.raw('custom_form_template::text')
+            ).find(id)
         else:
-            products = ProductModel.all()
+            products = ProductModel.select(
+                '*', db.raw('custom_form_template::text')
+            ).get()
 
         return products
 
@@ -23,11 +29,18 @@ class ProductService:
             for key, value in data.items():
                 setattr(product, key, value)
 
+            product.custom_form_template = json.dumps(
+                data['custom_form_template']
+            )
+
             product.user_created = 1
             product.user_modified = 1
 
-            return product.save()
-        except:
+            product.save()
+
+            return product
+        except Exception as ex:
+            print(ex)
             raise DatabaseError('Could not save!')
 
     def update(self, data):
@@ -37,7 +50,13 @@ class ProductService:
             for key, value in data.items():
                 setattr(product, key, value)
 
-            return product.save()
+            product.custom_form_template = json.dumps(
+                data['custom_form_template']
+            )
+
+            product.save()
+
+            return product
         except:
             raise DatabaseError('Could not update!')
 

@@ -28,7 +28,9 @@ class UserService:
             for key, value in data.items():
                 setattr(user, key, value)
 
-            return user.save()
+            user.save()
+
+            return user
         except:
             raise DatabaseError('Could not save!')
 
@@ -39,7 +41,9 @@ class UserService:
             for key, value in data.items():
                 setattr(user, key, value)
 
-            return user.save()
+            user.save()
+
+            return user
         except:
             raise DatabaseError('Could not update!')
 

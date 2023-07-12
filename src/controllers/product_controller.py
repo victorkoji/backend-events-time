@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Response, status
 from services.product_service import ProductService
 from schemas.product_schema import ProductCreateSchema, ProductSchema
 from fastapi.responses import JSONResponse
@@ -17,9 +17,9 @@ router = APIRouter(
 def get_all_items():
     try:
         products = product_service.get()
-        return JSONResponse(content=products.serialize(), status_code=200)
+        return products.serialize()
     except Exception as ex:
-        return JSONResponse(content={'message': ex.message}, status_code=400)
+        return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)
 
 
 @router.get('/{product_id}', response_model=ProductSchema)
@@ -27,35 +27,34 @@ def get_product(product_id: int):
     try:
         product = product_service.get(product_id)
         if (product):
-            return JSONResponse(content=product.serialize(), status_code=200)
+            return product.serialize()
         else:
-            return JSONResponse(content={'message': 'Product not found!'}, status_code=404)
+            return JSONResponse(content={'message': 'Product not found!'}, status_code=status.HTTP_404_NOT_FOUND)
     except Exception as ex:
-        return JSONResponse(content={'message': ex.message}, status_code=400)
+        return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)
 
 
-@router.post('/')
+@router.post('/', response_model=ProductSchema, status_code=status.HTTP_201_CREATED)
 def add_product(product: ProductCreateSchema):
     try:
-        product_service.add(product.dict())
-        return JSONResponse(content={'message': 'Product added successfully'}, status_code=201)
+        product = product_service.add(product.dict())
+        return product.serialize()
     except DatabaseError as ex:
-        return JSONResponse(content={'message': ex.message}, status_code=400)
+        return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)
 
 
-@router.put('/')
+@router.put('/', response_model=ProductSchema)
 def update_product(product: ProductSchema):
     try:
-        product_service.update(product.dict())
-        return JSONResponse(content={'message': 'Product updated successfully'}, status_code=200)
+        product = product_service.update(product.dict())
+        return product.serialize()
     except DatabaseError as ex:
-        return JSONResponse(content={'message': ex.message}, status_code=400)
+        return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)
 
 
-@router.delete('/{product_id}')
+@router.delete('/{product_id}', status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
 def delete_product(product_id):
     try:
         product_service.delete(product_id)
-        return JSONResponse(content={'message': 'Product deleted successfully'}, status_code=200)
     except DatabaseError as ex:
-        return JSONResponse(content={'message': ex.message}, status_code=400)
+        return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)

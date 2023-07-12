@@ -26,7 +26,9 @@ class ProductCategoryService:
             product_category.user_created = 1
             product_category.user_modified = 1
 
-            return product_category.save()
+            product_category.save()
+
+            return product_category
         except:
             raise DatabaseError('Could not save!')
 
@@ -37,7 +39,9 @@ class ProductCategoryService:
             for key, value in data.items():
                 setattr(product_category, key, value)
 
-            return product_category.save()
+            product_category.save()
+
+            return product_category
         except:
             raise DatabaseError('Could not update!')
 

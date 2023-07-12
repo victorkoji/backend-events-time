@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import date
+from typing import Optional
 
 
 class UserCreateSchema(BaseModel):
@@ -9,7 +10,7 @@ class UserCreateSchema(BaseModel):
     email: str
     cellphone: str
     password: str
-    password: str
+    token_fcm: Optional[float] = None
 
 
 class UserSchema(BaseModel):
