@@ -1,12 +1,12 @@
 from pydantic import BaseModel
 
 
-class ProductCategoryCreateSchema(BaseModel):
+class StandCategoryCreateSchema(BaseModel):
     name: str
     event_id: int
 
 
-class ProductCategorySchema(BaseModel):
+class StandCategorySchema(BaseModel):
     id: int
     name: str
     event_id: int

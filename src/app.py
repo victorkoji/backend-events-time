@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from config.database_config import database
+from config.database_config import db
 from controllers.__init__ import private_api_router, public_api_router
 from middlewares.auth_middleware import AuthMiddleware
 
@@ -17,5 +17,5 @@ def hello():
 
 
 if __name__ == "__main__":
-    app.db = database
+    app.db = db
     uvicorn.run(app, host="0.0.0.0", port=5000)

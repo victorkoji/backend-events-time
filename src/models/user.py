@@ -17,3 +17,6 @@ class UserModel(BaseModel, SoftDeletes):
     @belongs_to
     def user_group(self):
         return UserGroupModel
+
+    def get_dates(self):
+        return ['created_at', 'updated_at', 'deleted_at']

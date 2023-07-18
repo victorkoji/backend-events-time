@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from services.auth_service import AuthService
 from schemas.auth_schema import LoginSchema, TokenSchema
 from fastapi.responses import JSONResponse
@@ -16,4 +16,4 @@ router = APIRouter(
 @router.post("/login", response_model=Union[TokenSchema, None])
 def login(user: LoginSchema):
     token = auth_service.login(user.dict())
-    return JSONResponse(content={'token': token}, status_code=200)
+    return JSONResponse(content={'token': token})
