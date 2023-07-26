@@ -3,7 +3,6 @@ from services.user_service import UserService
 from schemas.user_schema import UserCreateSchema, UserSchema
 from fastapi.responses import JSONResponse
 from typing import List, Union
-from exceptions.custom_exception import DatabaseError
 
 
 user_service = UserService()
@@ -45,7 +44,7 @@ def add_user(user: UserCreateSchema):
 
         return user.serialize()
 
-    except DatabaseError as ex:
+    except Exception as ex:
         return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)
 
 
@@ -55,7 +54,7 @@ def update_user(user: UserSchema):
         user = user_service.update(user.dict())
         return user.serialize()
 
-    except DatabaseError as ex:
+    except Exception as ex:
         return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)
 
 
@@ -63,5 +62,5 @@ def update_user(user: UserSchema):
 def delete_user(user_id: int):
     try:
         user_service.delete(user_id)
-    except DatabaseError as ex:
+    except Exception as ex:
         return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)

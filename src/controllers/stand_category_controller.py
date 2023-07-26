@@ -3,7 +3,6 @@ from services.stand_category_service import StandCategoryService
 from schemas.stand_category_schema import StandCategoryCreateSchema, StandCategorySchema
 from fastapi.responses import JSONResponse
 from typing import List
-from exceptions.custom_exception import DatabaseError
 
 stand_category_service = StandCategoryService()
 router = APIRouter(
@@ -39,7 +38,7 @@ def add_stand_categories(stand_category: StandCategoryCreateSchema):
     try:
         stand_category = stand_category_service.add(stand_category.dict())
         return stand_category.serialize()
-    except DatabaseError as ex:
+    except Exception as ex:
         return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)
 
 
@@ -48,7 +47,7 @@ def update_stand_categories(stand_category: StandCategorySchema):
     try:
         stand_category = stand_category_service.update(stand_category.dict())
         return stand_category.serialize()
-    except DatabaseError as ex:
+    except Exception as ex:
         return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)
 
 
@@ -56,5 +55,5 @@ def update_stand_categories(stand_category: StandCategorySchema):
 def delete_stand_categories(stand_category_id):
     try:
         stand_category_service.delete(stand_category_id)
-    except DatabaseError as ex:
+    except Exception as ex:
         return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)

@@ -3,7 +3,6 @@ from services.event_service import EventService
 from schemas.event_schema import EventCreateSchema, EventSchema
 from fastapi.responses import JSONResponse
 from typing import List
-from exceptions.custom_exception import DatabaseError
 
 event_service = EventService()
 router = APIRouter(
@@ -42,7 +41,7 @@ def add_event(event: EventCreateSchema):
         event = event_service.add(event.dict())
         print(event.serialize())
         return event.serialize()
-    except DatabaseError as ex:
+    except Exception as ex:
         return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)
 
 
@@ -51,7 +50,7 @@ def update_event(event: EventSchema):
     try:
         event = event_service.update(event.dict())
         return event.serialize()
-    except DatabaseError as ex:
+    except Exception as ex:
         return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)
 
 
@@ -59,5 +58,5 @@ def update_event(event: EventSchema):
 def delete_event(event_id):
     try:
         event_service.delete(event_id)
-    except DatabaseError as ex:
+    except Exception as ex:
         return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)

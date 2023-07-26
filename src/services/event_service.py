@@ -1,5 +1,4 @@
 from models.event import EventModel
-from exceptions.custom_exception import DatabaseError
 
 
 class EventService:
@@ -30,7 +29,7 @@ class EventService:
 
             return event
         except:
-            raise DatabaseError('Could not save!')
+            raise Exception('Could not save!')
 
     def update(self, data):
         try:
@@ -43,13 +42,13 @@ class EventService:
 
             return event
         except:
-            raise DatabaseError('Could not update!')
+            raise Exception('Could not update!')
 
     def delete(self, event_id):
         try:
             event = EventModel.find(event_id)
             event.delete()
         except:
-            raise DatabaseError('Could not delete!')
+            raise Exception('Could not delete!')
 
         return event

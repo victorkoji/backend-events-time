@@ -3,7 +3,6 @@ from services.stand_service import StandService
 from schemas.stand_schema import StandCreateSchema, StandSchema
 from fastapi.responses import JSONResponse
 from typing import List
-from exceptions.custom_exception import DatabaseError
 
 stand_service = StandService()
 router = APIRouter(
@@ -39,7 +38,7 @@ def add_stand(stand: StandCreateSchema):
     try:
         stand = stand_service.add(stand.dict())
         return stand.serialize()
-    except DatabaseError as ex:
+    except Exception as ex:
         return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)
 
 
@@ -48,7 +47,7 @@ def update_stand(stand: StandSchema):
     try:
         stand = stand_service.update(stand.dict())
         return stand.serialize()
-    except DatabaseError as ex:
+    except Exception as ex:
         return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)
 
 
@@ -56,5 +55,5 @@ def update_stand(stand: StandSchema):
 def delete_stand(stand_id):
     try:
         stand_service.delete(stand_id)
-    except DatabaseError as ex:
+    except Exception as ex:
         return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)

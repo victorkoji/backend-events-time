@@ -1,5 +1,4 @@
 from models.product_category import ProductCategoryModel
-from exceptions.custom_exception import DatabaseError
 
 
 class ProductCategoryService:
@@ -30,7 +29,7 @@ class ProductCategoryService:
 
             return product_category
         except:
-            raise DatabaseError('Could not save!')
+            raise Exception('Could not save!')
 
     def update(self, data):
         try:
@@ -43,13 +42,13 @@ class ProductCategoryService:
 
             return product_category
         except:
-            raise DatabaseError('Could not update!')
+            raise Exception('Could not update!')
 
     def delete(self, product_id):
         try:
             product_category = ProductCategoryModel.find(product_id)
             product_category.delete()
         except:
-            raise DatabaseError('Could not delete!')
+            raise Exception('Could not delete!')
 
         return product_category

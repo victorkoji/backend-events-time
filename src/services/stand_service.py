@@ -1,5 +1,4 @@
 from models.stand import StandModel
-from exceptions.custom_exception import DatabaseError
 
 
 class StandService:
@@ -30,7 +29,7 @@ class StandService:
 
             return stand
         except Exception as ex:
-            raise DatabaseError('Could not save!')
+            raise Exception('Could not save!')
 
     def update(self, data):
         try:
@@ -43,13 +42,13 @@ class StandService:
 
             return stand
         except:
-            raise DatabaseError('Could not update!')
+            raise Exception('Could not update!')
 
     def delete(self, stand_id):
         try:
             stand = StandModel.find(stand_id)
             stand.delete()
         except:
-            raise DatabaseError('Could not delete!')
+            raise Exception('Could not delete!')
 
         return stand

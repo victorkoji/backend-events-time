@@ -3,7 +3,6 @@ from services.product_category_service import ProductCategoryService
 from schemas.product_category_schema import ProductCategoryCreateSchema, ProductCategorySchema
 from fastapi.responses import JSONResponse
 from typing import List
-from exceptions.custom_exception import DatabaseError
 
 product_category_service = ProductCategoryService()
 router = APIRouter(
@@ -36,7 +35,7 @@ def add_product_category(product: ProductCategoryCreateSchema):
     try:
         product_category = product_category_service.add(product.dict())
         return product_category.serialize()
-    except DatabaseError as ex:
+    except Exception as ex:
         return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)
 
 
@@ -45,7 +44,7 @@ def update_product_category(product: ProductCategorySchema):
     try:
         product_category = product_category_service.update(product.dict())
         return product_category.serialize()
-    except DatabaseError as ex:
+    except Exception as ex:
         return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)
 
 
@@ -53,5 +52,5 @@ def update_product_category(product: ProductCategorySchema):
 def delete_product_category(product_id):
     try:
         product_category_service.delete(product_id)
-    except DatabaseError as ex:
+    except Exception as ex:
         return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)

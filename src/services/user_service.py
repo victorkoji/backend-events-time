@@ -1,5 +1,4 @@
 from models.user import UserModel
-from exceptions.custom_exception import DatabaseError
 from utils.security import Security
 
 
@@ -32,7 +31,7 @@ class UserService:
 
             return user
         except:
-            raise DatabaseError('Could not save!')
+            raise Exception('Could not save!')
 
     def update(self, data):
         try:
@@ -45,13 +44,13 @@ class UserService:
 
             return user
         except:
-            raise DatabaseError('Could not update!')
+            raise Exception('Could not update!')
 
     def delete(self, product_id):
         try:
             user = UserModel.find(product_id)
             user.delete()
         except:
-            raise DatabaseError('Could not delete!')
+            raise Exception('Could not delete!')
 
         return user

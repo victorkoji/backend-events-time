@@ -1,12 +1,13 @@
 from models.product import ProductModel
-from exceptions.custom_exception import DatabaseError
+from exceptions.product_exception import DatabaseError, ProductNotFound
 import json
 from config.database_config import db
+from utils.logger import Logger
 
 
 class ProductService:
     def __init__(self):
-        pass
+        self.logger = Logger(self.__class__.__name__)
 
     def get(self, id=None):
         products = None
@@ -23,48 +24,60 @@ class ProductService:
         return products
 
     def add(self, data):
+        product = ProductModel()
+
+        for key, value in data.items():
+            setattr(product, key, value)
+
+        product.custom_form_template = json.dumps(
+            data['custom_form_template']
+        )
+
+        product.user_created = 1
+        product.user_modified = 1
+
         try:
-            product = ProductModel()
-
-            for key, value in data.items():
-                setattr(product, key, value)
-
-            product.custom_form_template = json.dumps(
-                data['custom_form_template']
-            )
-
-            product.user_created = 1
-            product.user_modified = 1
-
-            product.save()
-
-            return product
+            with db.transaction():
+                product.save()
         except Exception as ex:
-            print(ex)
-            raise DatabaseError('Could not save!')
+            self.logger.error(ex)
+            raise DatabaseError('Could not save!') from ex
+
+        return product
 
     def update(self, data):
+        product = ProductModel.find(data['id'])
+
+        if (product is None):
+            raise ProductNotFound()
+
+        for key, value in data.items():
+            setattr(product, key, value)
+
+        product.custom_form_template = json.dumps(
+            data['custom_form_template']
+        )
+
         try:
-            product = ProductModel.find(data['id'])
+            with db.transaction():
+                product.save()
+        except Exception as ex:
+            self.logger.error(ex)
+            raise DatabaseError('Could not update!') from ex
 
-            for key, value in data.items():
-                setattr(product, key, value)
-
-            product.custom_form_template = json.dumps(
-                data['custom_form_template']
-            )
-
-            product.save()
-
-            return product
-        except:
-            raise DatabaseError('Could not update!')
+        return product
 
     def delete(self, product_id):
+        product = ProductModel.find(product_id)
+
+        if (product is None):
+            raise ProductNotFound()
+
         try:
-            product = ProductModel.find(product_id)
-            product.delete()
-        except:
-            raise DatabaseError('Could not delete!')
+            with db.transaction():
+                product.delete()
+        except Exception as ex:
+            self.logger.error(ex)
+            raise DatabaseError('Could not delete!') from ex
 
         return product
