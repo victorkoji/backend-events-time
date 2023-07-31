@@ -1,8 +1,8 @@
 from orator import SoftDeletes
+from orator.orm import belongs_to
 from models.base_model import BaseModel
 from models.stand_category import StandCategoryModel
 from models.event import EventModel
-from orator.orm import belongs_to
 
 
 class StandModel(BaseModel, SoftDeletes):

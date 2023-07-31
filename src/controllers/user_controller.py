@@ -1,8 +1,7 @@
+from typing import List, Union
 from fastapi import APIRouter, HTTPException, Response, status
 from services.user_service import UserService
 from schemas.user_schema import UserCreateSchema, UserSchema
-from fastapi.responses import JSONResponse
-from typing import List, Union
 
 
 user_service = UserService()
@@ -19,7 +18,7 @@ def get_all_items():
         users = user_service.get()
         return users.serialize()
     except Exception as ex:
-        return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)
+        raise handle_exception(ex)
 
 
 @router.get('/{user_id}', response_model=UserSchema)
@@ -28,7 +27,7 @@ def get_user(user_id: int):
         user = user_service.get(user_id)
         return user.serialize()
     except Exception as ex:
-        return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)
+        raise handle_exception(ex)
 
 
 @router.post("/", response_model=Union[UserSchema, None], status_code=status.HTTP_201_CREATED)
@@ -45,7 +44,7 @@ def add_user(user: UserCreateSchema):
         return user.serialize()
 
     except Exception as ex:
-        return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)
+        raise handle_exception(ex)
 
 
 @router.put("/", response_model=Union[UserSchema, None])
@@ -55,7 +54,7 @@ def update_user(user: UserSchema):
         return user.serialize()
 
     except Exception as ex:
-        return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)
+        raise handle_exception(ex)
 
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
@@ -63,4 +62,11 @@ def delete_user(user_id: int):
     try:
         user_service.delete(user_id)
     except Exception as ex:
-        return JSONResponse(content={'message': ex.message}, status_code=status.HTTP_400_BAD_REQUEST)
+        raise handle_exception(ex)
+
+
+def handle_exception(ex):
+    message_error = str(ex)
+    status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+    return HTTPException(status_code=status_code, detail=message_error)

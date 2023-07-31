@@ -1,6 +1,7 @@
+import json
+
 from models.product import ProductModel
 from exceptions.product_exception import DatabaseError, ProductNotFound
-import json
 from config.database_config import db
 from utils.logger import Logger
 
@@ -9,13 +10,13 @@ class ProductService:
     def __init__(self):
         self.logger = Logger(self.__class__.__name__)
 
-    def get(self, id=None):
+    def get(self, product_id=None):
         products = None
 
-        if id:
+        if product_id:
             products = ProductModel.select(
                 '*', db.raw('custom_form_template::text')
-            ).find(id)
+            ).find(product_id)
         else:
             products = ProductModel.select(
                 '*', db.raw('custom_form_template::text')
@@ -48,7 +49,7 @@ class ProductService:
     def update(self, data):
         product = ProductModel.find(data['id'])
 
-        if (product is None):
+        if product is None:
             raise ProductNotFound()
 
         for key, value in data.items():
@@ -70,7 +71,7 @@ class ProductService:
     def delete(self, product_id):
         product = ProductModel.find(product_id)
 
-        if (product is None):
+        if product is None:
             raise ProductNotFound()
 
         try:

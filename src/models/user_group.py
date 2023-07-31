@@ -1,6 +1,4 @@
 from orator import SoftDeletes
-from orator.orm import has_many
-# from models.user import UserModel
 from models.base_model import BaseModel
 
 

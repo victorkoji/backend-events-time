@@ -1,8 +1,8 @@
+from typing import List
 from fastapi import APIRouter, Response, status, HTTPException
+from fastapi.responses import JSONResponse
 from services.product_service import ProductService
 from schemas.product_schema import ProductCreateSchema, ProductSchema
-from fastapi.responses import JSONResponse
-from typing import List
 from exceptions.product_exception import DatabaseError, ProductNotFound
 from utils.logger import Logger
 
@@ -30,10 +30,11 @@ def get_all_items():
 def get_product(product_id: int):
     try:
         product = product_service.get(product_id)
-        if (product):
+
+        if product:
             return product.serialize()
-        else:
-            return JSONResponse(content={'message': 'Product not found!'}, status_code=status.HTTP_404_NOT_FOUND)
+
+        return JSONResponse(content={'message': 'Product not found!'}, status_code=status.HTTP_404_NOT_FOUND)
 
     except Exception as ex:
         raise handle_exception(ex)

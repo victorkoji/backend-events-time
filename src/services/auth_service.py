@@ -1,5 +1,6 @@
 from utils.security import Security
 from services.user_service import UserService
+from exceptions.auth_exception import UnathorizedError
 
 
 class AuthService:
@@ -18,5 +19,5 @@ class AuthService:
                 'user_group': user_database['user_group_id'],
             }
             return self.security.create_token(data_token)
-        else:
-            raise Exception('Invalid password')
+
+        raise UnathorizedError('Invalid password')
