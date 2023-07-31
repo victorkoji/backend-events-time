@@ -1,5 +1,5 @@
+from typing import Any
 from pydantic import BaseModel, Json
-from typing import Any, Optional
 
 
 class ProductCreateSchema(BaseModel):

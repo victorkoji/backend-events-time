@@ -1,8 +1,7 @@
 from orator import SoftDeletes
-from orator.orm import belongs_to, accessor
+from orator.orm import belongs_to
 from models.product_category import ProductCategoryModel
 from models.base_model import BaseModel
-import json
 
 
 class ProductModel(BaseModel, SoftDeletes):

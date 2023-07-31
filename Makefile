@@ -74,3 +74,8 @@ test-coverage:
 .PHONY: db-test-migrate
 db-test-migrate:
 	docker exec $(IMAGE_NAME_API) orator migrate -f -c $(DATABASE_PATH_CONFIG_TEST)
+
+
+.PHONY: lint
+lint:
+	docker exec $(IMAGE_NAME_API) pylint ./src

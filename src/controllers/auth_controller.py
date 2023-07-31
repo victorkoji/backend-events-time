@@ -1,8 +1,8 @@
-from fastapi import APIRouter
+from typing import Union
+from fastapi import APIRouter, HTTPException, status
+from fastapi.responses import JSONResponse
 from services.auth_service import AuthService
 from schemas.auth_schema import LoginSchema, TokenSchema
-from fastapi.responses import JSONResponse
-from typing import Union
 
 
 auth_service = AuthService()
@@ -15,5 +15,8 @@ router = APIRouter(
 
 @router.post("/login", response_model=Union[TokenSchema, None])
 def login(user: LoginSchema):
-    token = auth_service.login(user.dict())
-    return JSONResponse(content={'token': token})
+    try:
+        token = auth_service.login(user.dict())
+        return JSONResponse(content={'token': token})
+    except:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=None)

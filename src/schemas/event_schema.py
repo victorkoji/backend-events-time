@@ -1,6 +1,6 @@
-from pydantic import BaseModel
 from datetime import date, datetime
 from typing import Union
+from pydantic import BaseModel
 
 
 class EventCreateSchema(BaseModel):
