@@ -20,3 +20,4 @@ class UserSchema(BaseModel):
     birth_date: date
     email: str
     cellphone: str
+    user_group_id: Optional[int] = None

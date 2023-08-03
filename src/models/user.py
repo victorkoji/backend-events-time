@@ -8,7 +8,7 @@ class UserModel(BaseModel, SoftDeletes):
     __schema__ = 'public'
     __table__ = 'users'
     __fillable__ = [
-        'first_name', 'last_name', 'birth_date', 'email', 'cellphone', 'password'
+        'first_name', 'last_name', 'birth_date', 'email', 'cellphone', 'password', 'user_group_id'
     ]
     __guarded__ = ['id', 'password']
     __dates__ = ['deleted_at', 'birth_date']
