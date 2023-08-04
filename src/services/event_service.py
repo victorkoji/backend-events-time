@@ -1,29 +1,29 @@
 from models.event import EventModel
 from exceptions.event_exception import DatabaseError
-
+from services.user_event_stand_service import UserEventStandService
 
 class EventService:
     def __init__(self):
-        pass
+        self.user_event_stand_service = UserEventStandService()
 
-    def get(self, event_id=None):
+    def get(self, user_id, event_id=None):
         events = None
 
         if event_id:
-            events = EventModel.find(event_id)
+            events = EventModel.find(event_id).serialize()
         else:
-            events = EventModel.all()
+            events = self.user_event_stand_service.get_stand_by_user_event(user_id)
 
         return events
 
-    def add(self, data):
+    def add(self, data, user_id):
         event = EventModel()
 
         for key, value in data.items():
             setattr(event, key, value)
 
-        event.user_created = 1
-        event.user_modified = 1
+        event.user_created = user_id
+        event.user_modified = user_id
 
         try:
             event.save()

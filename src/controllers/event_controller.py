@@ -1,9 +1,10 @@
 from typing import List
-from fastapi import APIRouter, Response, status, HTTPException
+from fastapi import APIRouter, Response, status, HTTPException, Depends
 from fastapi.responses import JSONResponse
 
 from services.event_service import EventService
-from schemas.event_schema import EventCreateSchema, EventSchema
+from schemas.event_schema import EventCreateSchema, EventSchema, EventByUserSchema
+from controllers.dependencies.user_dependency import get_user_token
 
 event_service = EventService()
 router = APIRouter(
@@ -13,22 +14,22 @@ router = APIRouter(
 )
 
 
-@router.get('/', response_model=List[EventSchema])
-def get_all_items():
+@router.get('/', response_model=List[EventByUserSchema])
+def get_all_items(user: dict = Depends(get_user_token)):
     try:
-        events = event_service.get()
-        return events.serialize()
+        events = event_service.get(user['id'])
+        return events
     except Exception as ex:
         raise handle_exception(ex)
 
 
 @router.get('/{event_id}', response_model=EventSchema)
-def get_event(event_id: int):
+def get_event(event_id: int, user: dict = Depends(get_user_token)):
     try:
-        event = event_service.get(event_id)
+        event = event_service.get(user['id'], event_id)
 
         if event:
-            return event.serialize()
+            return event
 
         return JSONResponse(content={'message': 'Event not found!'}, status_code=status.HTTP_404_NOT_FOUND)
     except Exception as ex:
@@ -36,12 +37,10 @@ def get_event(event_id: int):
 
 
 @router.post('/', response_model=EventSchema, status_code=status.HTTP_201_CREATED)
-def add_event(event: EventCreateSchema):
+def add_event(event: EventCreateSchema, user: dict = Depends(get_user_token)):
     try:
-        print(event.dict())
+        event = event_service.add(event.dict(), user['id'])
 
-        event = event_service.add(event.dict())
-        print(event.serialize())
         return event.serialize()
     except Exception as ex:
         raise handle_exception(ex)
