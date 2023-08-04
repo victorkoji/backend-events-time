@@ -5,6 +5,8 @@ from fastapi.responses import JSONResponse
 from services.event_service import EventService
 from schemas.event_schema import EventCreateSchema, EventSchema, EventByUserSchema
 from controllers.dependencies.user_dependency import get_user_token
+from exceptions.event_exception import NotFoundEventsError
+
 
 event_service = EventService()
 router = APIRouter(
@@ -17,16 +19,16 @@ router = APIRouter(
 @router.get('/', response_model=List[EventByUserSchema])
 def get_all_items(user: dict = Depends(get_user_token)):
     try:
-        events = event_service.get(user['id'])
+        events = event_service.get_all(user['id'])
         return events
     except Exception as ex:
         raise handle_exception(ex)
 
 
-@router.get('/{event_id}', response_model=EventSchema)
+@router.get('/{event_id}', response_model=EventByUserSchema)
 def get_event(event_id: int, user: dict = Depends(get_user_token)):
     try:
-        event = event_service.get(user['id'], event_id)
+        event = event_service.get_event(user['id'], event_id)
 
         if event:
             return event
@@ -64,6 +66,10 @@ def delete_event(event_id):
 
 def handle_exception(ex):
     message_error = str(ex)
-    status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+    
+    if isinstance(ex, NotFoundEventsError):
+        status_code = status.HTTP_404_NOT_FOUND
+    else:
+        status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
     return HTTPException(status_code=status_code, detail=message_error)
