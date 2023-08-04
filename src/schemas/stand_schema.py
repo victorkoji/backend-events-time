@@ -14,3 +14,8 @@ class StandSchema(BaseModel):
     is_cashier: bool
     stand_category_id: int
     event_id: int
+
+class StandNameCashierSchema(BaseModel):
+    id: int
+    name: str
+    is_cashier: bool
