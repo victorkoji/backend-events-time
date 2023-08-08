@@ -1,6 +1,7 @@
 from utils.security import Security
 from services.user_service import UserService
 from exceptions.auth_exception import UnathorizedError
+from models.user_group_enum import UserGroup
 
 
 class AuthService:
@@ -21,3 +22,8 @@ class AuthService:
             return self.security.create_token(data_token)
 
         raise UnathorizedError('Invalid password')
+
+    def register(self, user):
+        user['user_group_id'] = UserGroup.CLIENT.value
+        user = self.user_service.register(user)
+        return user.serialize()

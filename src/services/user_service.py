@@ -1,6 +1,6 @@
 from models.user import UserModel
 from utils.security import Security
-from exceptions.user_exception import DatabaseError
+from exceptions.user_exception import DatabaseError, EmailAlreadyExistError
 
 
 class UserService:
@@ -34,6 +34,24 @@ class UserService:
 
         return user
 
+    def register(self, data):
+        user_exists = self.get_by_email(data['email'])
+
+        if user_exists is not None:
+            raise EmailAlreadyExistError()
+
+        user = UserModel()
+        data['password'] = self.security.create_password(data['password'])
+
+        for key, value in data.items():
+            setattr(user, key, value)
+
+        try:
+            user.save()
+        except:
+            raise DatabaseError('Could not save!')
+
+        return user
 
     def update(self, data):
         user = UserModel.find(data['id'])

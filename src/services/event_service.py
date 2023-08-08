@@ -12,7 +12,7 @@ class EventService:
 
     def get_event(self, user_id, event_id):
         event = self.user_event_stand_service.get_stand_by_user_event(user_id, event_id)
-        
+
         if len(event) == 0:
             raise NotFoundEventsError()
 
