@@ -66,7 +66,7 @@ def delete_event(event_id):
 
 def handle_exception(ex):
     message_error = str(ex)
-    
+
     if isinstance(ex, NotFoundEventsError):
         status_code = status.HTTP_404_NOT_FOUND
     else:
