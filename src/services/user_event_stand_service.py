@@ -1,4 +1,3 @@
-from datetime import datetime
 from models.user_event_stands import UserEventStandModel
 
 class UserEventStandService:
@@ -6,14 +5,9 @@ class UserEventStandService:
         pass
 
     def get_stand_by_user_event(self, user_id=None, event_id=None):
-        current_date = datetime.now().date()
 
         events = UserEventStandModel.with_('event', 'stand') \
-            .where('user_id', user_id) \
-            .where_has(
-                'event',
-                lambda q: q.where('programmed_date_initial', '<=', current_date).where('programmed_date_final', '>=', current_date)
-            )
+            .where('user_id', user_id)
 
         if event_id is not None:
             events.where('event_id', event_id)
