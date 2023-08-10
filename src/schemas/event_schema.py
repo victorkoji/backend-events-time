@@ -17,7 +17,7 @@ class EventSchema(BaseModel):
     name: str
     programmed_date_initial: Union[date, datetime]
     programmed_date_final: Union[date, datetime]
-    address: str
+    address: Union[str, None]
     is_public: bool
 
 
@@ -26,5 +26,6 @@ class EventByUserSchema(BaseModel):
     name: str
     programmed_date_initial: Union[date, datetime]
     programmed_date_final: Union[date, datetime]
+    address: Union[str, None]
     is_public: bool
     stands: List[StandNameCashierSchema]

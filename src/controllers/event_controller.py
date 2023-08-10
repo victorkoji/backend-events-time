@@ -1,9 +1,8 @@
 from typing import List
 from fastapi import APIRouter, Response, status, HTTPException, Depends
-from fastapi.responses import JSONResponse
 
 from services.event_service import EventService
-from schemas.event_schema import EventCreateSchema, EventSchema, EventByUserSchema
+from schemas.event_schema import EventCreateSchema, EventSchema
 from controllers.dependencies.user_dependency import get_user_token
 from exceptions.event_exception import NotFoundEventsError
 
@@ -16,24 +15,18 @@ router = APIRouter(
 )
 
 
-@router.get('/', response_model=List[EventByUserSchema])
-def get_all_items(user: dict = Depends(get_user_token)):
+@router.get('/', response_model=List[EventSchema])
+def get_all_items():
     try:
-        events = event_service.get_all(user['id'])
-        return events
+        return event_service.get_all()
     except Exception as ex:
         raise handle_exception(ex)
 
 
-@router.get('/{event_id}', response_model=EventByUserSchema)
-def get_event(event_id: int, user: dict = Depends(get_user_token)):
+@router.get('/{event_id}', response_model=EventSchema)
+def get_event(event_id: int):
     try:
-        event = event_service.get_event(user['id'], event_id)
-
-        if event:
-            return event
-
-        return JSONResponse(content={'message': 'Event not found!'}, status_code=status.HTTP_404_NOT_FOUND)
+        return event_service.get_event(event_id)
     except Exception as ex:
         raise handle_exception(ex)
 
