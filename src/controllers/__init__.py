@@ -6,7 +6,8 @@ from controllers import (
 )
 
 from controllers.mobile import (
-    event_controller as mobile_event_controller
+    event_controller as mobile_event_controller,
+    product_controller as mobile_product_controller,
 )
 
 private_api_router = APIRouter()
@@ -24,3 +25,4 @@ public_api_router.include_router(auth_controller.router_public)
 
 # Mobile
 private_api_router.include_router(mobile_event_controller.router)
+private_api_router.include_router(mobile_product_controller.router)

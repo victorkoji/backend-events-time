@@ -1,7 +1,7 @@
 from utils.security import Security
 from services.user_service import UserService
 from exceptions.auth_exception import UnathorizedError
-from models.user_group_enum import UserGroup
+from models.enums.user_group_enum import UserGroup
 
 
 class AuthService:

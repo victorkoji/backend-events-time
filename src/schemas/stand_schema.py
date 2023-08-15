@@ -19,3 +19,7 @@ class StandNameCashierSchema(BaseModel):
     id: int
     name: str
     is_cashier: bool
+
+class StandNameSchema(BaseModel):
+    id: int
+    name: str

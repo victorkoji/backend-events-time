@@ -1,4 +1,5 @@
 from models.product_category import ProductCategoryModel
+from models.product import ProductModel
 from exceptions.product_category_exception import DatabaseError
 
 
@@ -15,6 +16,20 @@ class ProductCategoryService:
             product_categories = ProductCategoryModel.all()
 
         return product_categories
+
+
+    def get_menu_by_event_id(self, event_id):
+        categories = ProductCategoryModel \
+            .with_({
+                'products': lambda q: q
+                    .order_by(f'{ProductModel.__table__}.name')
+                    .with_('stand')
+            }) \
+            .where('event_id', event_id) \
+            .order_by(f'{ProductCategoryModel.__table__}.name') \
+            .get()
+
+        return categories.serialize()
 
     def add(self, data):
         product_category = ProductCategoryModel()
