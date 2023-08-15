@@ -1,6 +1,7 @@
 import json
 
 from models.product import ProductModel
+from services.product_category_service import ProductCategoryService
 from exceptions.product_exception import DatabaseError, ProductNotFound
 from config.database_config import db
 from utils.logger import Logger
@@ -8,6 +9,7 @@ from utils.logger import Logger
 
 class ProductService:
     def __init__(self):
+        self.product_category_service = ProductCategoryService()
         self.logger = Logger(self.__class__.__name__)
 
     def get(self, product_id=None):
@@ -23,6 +25,9 @@ class ProductService:
             ).get()
 
         return products
+
+    def get_menu_by_event_id(self, event_id):
+        return self.product_category_service.get_menu_by_event_id(event_id)
 
     def add(self, data):
         product = ProductModel()
