@@ -1,6 +1,7 @@
 from config.database_config import db
 from models.event import EventModel
-from exceptions.event_exception import DatabaseError, NotFoundEventsError
+from exceptions.event_exception import NotFoundEventsError
+from exceptions.general_exception import DatabaseError
 from services.user_event_stand_service import UserEventStandService
 
 class EventService:

@@ -1,5 +1,6 @@
 IMAGE_NAME_API=events_api
 IMAGE_NAME_DATABASE=database
+IMAGE_NAME_LOCALSTACK=localstack
 DATABASE_USER=postgres
 DATABASE_NAME=postgres
 DATABASE_PATH_CONFIG=./src/config/database_config.py
@@ -79,3 +80,13 @@ db-test-migrate:
 .PHONY: lint
 lint:
 	docker exec $(IMAGE_NAME_API) pylint ./src
+
+
+# AWS COMMANDS
+.PHONY: aws-shell
+aws-shell:
+	docker-compose exec $(IMAGE_NAME_LOCALSTACK) bash
+
+.PHONY: aws-list-buckets
+aws-list-buckets:
+	docker-compose exec $(IMAGE_NAME_LOCALSTACK) aws --endpoint-url=http://127.0.0.1:4566 s3 ls

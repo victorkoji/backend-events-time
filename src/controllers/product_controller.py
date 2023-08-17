@@ -1,9 +1,11 @@
 from typing import List
-from fastapi import APIRouter, Response, status, HTTPException
+from fastapi import APIRouter, Response, status, HTTPException, UploadFile, File, Depends
 from fastapi.responses import JSONResponse
 from services.product_service import ProductService
 from schemas.product_schema import ProductCreateSchema, ProductSchema
-from exceptions.product_exception import DatabaseError, ProductNotFound
+from exceptions.product_exception import ProductNotFound
+from exceptions.general_exception import DatabaseError
+from controllers.dependencies.user_dependency import get_user_token
 from utils.logger import Logger
 
 logger = Logger("ProductController")
@@ -41,9 +43,9 @@ def get_product(product_id: int):
 
 
 @router.post('/', response_model=ProductSchema, status_code=status.HTTP_201_CREATED)
-def add_product(product: ProductCreateSchema):
+def add_product(product: ProductCreateSchema, file: UploadFile = File(None), user: dict = Depends(get_user_token)):
     try:
-        product = product_service.add(product.dict())
+        product = product_service.add(product.dict(), file, user['id'])
         return product.serialize()
 
     except Exception as ex:
