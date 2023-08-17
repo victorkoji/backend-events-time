@@ -1,6 +1,7 @@
 from models.user import UserModel
 from utils.security import Security
-from exceptions.user_exception import DatabaseError, EmailAlreadyExistError
+from exceptions.user_exception import EmailAlreadyExistError
+from exceptions.general_exception import DatabaseError
 
 
 class UserService:

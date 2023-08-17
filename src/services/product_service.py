@@ -2,7 +2,9 @@ import json
 
 from models.product import ProductModel
 from services.product_category_service import ProductCategoryService
-from exceptions.product_exception import DatabaseError, ProductNotFound
+from services.product_file_service import ProductFileService
+from exceptions.product_exception import ProductNotFound
+from exceptions.general_exception import DatabaseError
 from config.database_config import db
 from utils.logger import Logger
 
@@ -10,6 +12,7 @@ from utils.logger import Logger
 class ProductService:
     def __init__(self):
         self.product_category_service = ProductCategoryService()
+        self.product_file_service = ProductFileService()
         self.logger = Logger(self.__class__.__name__)
 
     def get(self, product_id=None):
@@ -18,18 +21,22 @@ class ProductService:
         if product_id:
             products = ProductModel.select(
                 '*', db.raw('custom_form_template::text')
-            ).find(product_id)
+            ) \
+            .with_('product_category', 'product_file', 'stand') \
+            .find(product_id)
         else:
             products = ProductModel.select(
                 '*', db.raw('custom_form_template::text')
-            ).get()
+            ) \
+            .with_('product_category', 'product_file', 'stand') \
+            .get()
 
         return products
 
     def get_menu_by_event_id(self, event_id):
         return self.product_category_service.get_menu_by_event_id(event_id)
 
-    def add(self, data):
+    def add(self, data, file, user_id):
         product = ProductModel()
 
         for key, value in data.items():
@@ -39,11 +46,13 @@ class ProductService:
             data['custom_form_template']
         )
 
-        product.user_created = 1
-        product.user_modified = 1
+        product.user_created = user_id
+        product.user_modified = user_id
 
         try:
             with db.transaction():
+                product_file = self.product_file_service.save_file(file, user_id)
+                product.product_file_id = product_file.id
                 product.save()
         except Exception as ex:
             self.logger.error(ex)

@@ -1,5 +1,5 @@
 from models.stand import StandModel
-from exceptions.stand_exception import DatabaseError
+from exceptions.general_exception import DatabaseError
 
 
 class StandService:

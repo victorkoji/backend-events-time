@@ -1,7 +1,8 @@
 from typing import Union
 from fastapi import APIRouter, HTTPException, status, Request, Response
 from fastapi.responses import JSONResponse
-from exceptions.user_exception import DatabaseError, EmailAlreadyExistError
+from exceptions.user_exception import EmailAlreadyExistError
+from exceptions.general_exception import DatabaseError
 from services.auth_service import AuthService
 from services.user_service import UserService
 from schemas.auth_schema import LoginSchema, TokenSchema, RegisterInputSchema

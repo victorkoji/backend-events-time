@@ -1,5 +1,5 @@
 from models.stand_category import StandCategoryModel
-from exceptions.stand_category_exception import DatabaseError
+from exceptions.general_exception import DatabaseError
 
 
 class StandCategoryService:

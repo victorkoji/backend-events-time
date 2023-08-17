@@ -1,6 +1,6 @@
 from models.product_category import ProductCategoryModel
 from models.product import ProductModel
-from exceptions.product_category_exception import DatabaseError
+from exceptions.general_exception import DatabaseError
 
 
 class ProductCategoryService:
@@ -23,7 +23,7 @@ class ProductCategoryService:
             .with_({
                 'products': lambda q: q
                     .order_by(f'{ProductModel.__table__}.name')
-                    .with_('stand')
+                    .with_('stand', 'product_file')
             }) \
             .where('event_id', event_id) \
             .order_by(f'{ProductCategoryModel.__table__}.name') \
