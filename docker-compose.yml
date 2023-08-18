@@ -17,8 +17,6 @@ services:
       - ./public/images:/app/public/images
     environment:
       FLASK_ENV: development
-      DB_HOST: database
-      DB_TEST_HOST: test_database
       PYTHONPATH: /app/src
 
   database:
