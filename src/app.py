@@ -1,16 +1,21 @@
+import os
+import uvicorn
+
 from fastapi import FastAPI, Depends
 from fastapi.staticfiles import StaticFiles
-import uvicorn
-from config.database_config import db
+from dotenv import load_dotenv
 from controllers.__init__ import private_api_router, public_api_router
 from middlewares.auth_middleware import AuthMiddleware
 
+if os.getenv("FLASK_ENV") == 'development':
+    load_dotenv(dotenv_path=f'.env.{os.getenv("FLASK_ENV")}')
+
 app = FastAPI()
-app.include_router(private_api_router, prefix="/api", dependencies=[Depends(AuthMiddleware())])
-app.include_router(public_api_router, prefix="/api")
+app.include_router(private_api_router, prefix=os.getenv('API_PREFIX'), dependencies=[Depends(AuthMiddleware())])
+app.include_router(public_api_router, prefix=os.getenv('API_PREFIX'))
 
 # Static folder
-app.mount("/api/public/images", StaticFiles(directory='public/images'), name="images")
+app.mount(os.getenv('STATIC_PUBLIC_FOLDER'), StaticFiles(directory='public/images'), name="images")
 
 @app.get("/")
 def hello():
@@ -18,5 +23,4 @@ def hello():
 
 
 if __name__ == "__main__":
-    app.db = db
-    uvicorn.run(app, host="0.0.0.0", port=5000)
+    uvicorn.run(app)
