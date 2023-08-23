@@ -19,7 +19,7 @@ router = APIRouter(
 @router.get('/', response_model=List[EventByUserSchema])
 def get_all_events_by_user(user: dict = Depends(get_user_token)):
     try:
-        events = event_service.get_all_events_by_user(user['id'])
+        events = event_service.get_all_events_by_user(user['sub'])
         return events
     except Exception as ex:
         raise handle_exception(ex)
@@ -28,7 +28,7 @@ def get_all_events_by_user(user: dict = Depends(get_user_token)):
 @router.get('/{event_id}', response_model=EventByUserSchema)
 def get_event_by_user(event_id: int, user: dict = Depends(get_user_token)):
     try:
-        event = event_service.get_event_by_user(user['id'], event_id)
+        event = event_service.get_event_by_user(user['sub'], event_id)
 
         if event:
             return event

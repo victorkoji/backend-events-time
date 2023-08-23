@@ -17,7 +17,7 @@ class AuthMiddleware(HTTPBearer):
             if not credentials.scheme == "Bearer":
                 raise HTTPException(status_code=401, detail="Invalid authentication scheme.")
 
-            user = security_utils.verify_token(credentials.credentials)
+            user = security_utils.get_and_decode_token(credentials.credentials)
 
             if not user:
                 raise HTTPException(status_code=401, detail="Invalid token or expired token.")

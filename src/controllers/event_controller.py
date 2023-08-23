@@ -34,7 +34,7 @@ def get_event(event_id: int):
 @router.post('/', response_model=EventSchema, status_code=status.HTTP_201_CREATED)
 def add_event(event: EventCreateSchema, user: dict = Depends(get_user_token)):
     try:
-        event = event_service.add(event.dict(), user['id'])
+        event = event_service.add(event.dict(), user['sub'])
 
         return event.serialize()
     except Exception as ex:
