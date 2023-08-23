@@ -45,7 +45,7 @@ def get_product(product_id: int):
 @router.post('/', response_model=ProductSchema, status_code=status.HTTP_201_CREATED)
 def add_product(product: ProductCreateSchema, file: UploadFile = File(None), user: dict = Depends(get_user_token)):
     try:
-        product = product_service.add(product.dict(), file, user['id'])
+        product = product_service.add(product.dict(), file, user['sub'])
         return product.serialize()
 
     except Exception as ex:
