@@ -51,8 +51,10 @@ class ProductService:
 
         try:
             with db.transaction():
-                product_file = self.product_file_service.save_file(file, user_id)
-                product.product_file_id = product_file.id
+                if file:
+                    product_file = self.product_file_service.save_file(file, user_id)
+                    product.product_file_id = product_file.id
+
                 product.save()
         except Exception as ex:
             self.logger.error(ex)
