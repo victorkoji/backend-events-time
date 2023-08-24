@@ -1,5 +1,6 @@
 from typing import Union
-from fastapi import APIRouter, HTTPException, status, Request, Response
+from fastapi import APIRouter, HTTPException, status, Response, Depends
+from controllers.dependencies.user_dependency import get_user_token
 from exceptions.auth_exception import UnathorizedError
 from exceptions.user_exception import EmailAlreadyExistError
 from exceptions.general_exception import DatabaseError
@@ -58,10 +59,9 @@ async def refresh_token(refresh_token_input: RefreshTokenInputSchema):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ex))
 
 @router_private.get("/logged", response_model=UserSchema)
-def logged(request: Request):
+def logged(user: dict = Depends(get_user_token)):
     try:
-        user_token = request.state.user
-        user = user_service.get(user_token['id'])
+        user = user_service.get(user['sub'])
         return user.serialize()
     except:
         raise HTTPException(status_code=status.HTTP_412_PRECONDITION_FAILED, detail=None)
