@@ -1,4 +1,3 @@
-import os
 from datetime import datetime, timedelta
 import bcrypt
 from jose import jwt
@@ -6,30 +5,29 @@ from jose import jwt
 
 class Security():
     def __init__(self):
-        self.secret_key = os.getenv("AUTH_SECRET_KEY")
-        self.algorithm = os.getenv("AUTH_SECRET_ALGORITHM")
+        pass
 
-    def verify_password(self, password, hashed_password):
+    def verify_password(self, password: str, hashed_password: str):
         return bcrypt.checkpw(password.encode(), hashed_password.encode())
 
-    def get_and_decode_token(self, token):
+    def get_decode_token(self, token, secret_key: str, algorithms: str):
         try:
             decode_token = jwt.decode(
                 token,
-                self.secret_key,
-                algorithms=self.algorithm
+                secret_key,
+                algorithms
             )
 
             return decode_token
         except jwt.JWTError:
             return False
 
-    def create_token(self, data, expires_delta: timedelta):
+    def create_token(self, data: dict, secret_key: str, algorithm: str, expires_delta: timedelta):
         to_encode = data.copy()
         expire = datetime.utcnow() + expires_delta
         to_encode.update({"exp": expire})
-        return jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm)
+        return jwt.encode(to_encode, secret_key, algorithm)
 
-    def create_password(self, password):
+    def create_password(self, password: str):
         salt = bcrypt.gensalt()
         return bcrypt.hashpw(password.encode(), salt).decode()
