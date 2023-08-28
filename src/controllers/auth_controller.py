@@ -7,7 +7,7 @@ from exceptions.general_exception import DatabaseError
 from services.auth_service import AuthService
 from services.user_service import UserService
 from schemas.auth_schema import LoginSchema, TokenSchema, RegisterInputSchema, RefreshTokenInputSchema
-from schemas.user_schema import UserSchema
+from schemas.user_schema import UserSchemaResponse
 
 
 auth_service = AuthService()
@@ -58,7 +58,7 @@ async def refresh_token(refresh_token_input: RefreshTokenInputSchema):
     except Exception as ex:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ex))
 
-@router_private.get("/logged", response_model=UserSchema)
+@router_private.get("/logged", response_model=UserSchemaResponse)
 def logged(user: dict = Depends(get_user_token)):
     try:
         user = user_service.get(user['sub'])

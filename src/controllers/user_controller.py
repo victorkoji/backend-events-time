@@ -1,7 +1,7 @@
 from typing import List, Union
 from fastapi import APIRouter, HTTPException, Response, status
 from services.user_service import UserService
-from schemas.user_schema import UserCreateSchema, UserSchema
+from schemas.user_schema import UserCreateSchemaInput, UserSchemaResponse, TokenFcmSchemaInput, TokenFcmSchemaResponse
 
 
 user_service = UserService()
@@ -12,7 +12,7 @@ router = APIRouter(
 )
 
 
-@router.get('/', response_model=List[UserSchema])
+@router.get('/', response_model=List[UserSchemaResponse])
 def get_all_items():
     try:
         users = user_service.get()
@@ -21,7 +21,7 @@ def get_all_items():
         raise handle_exception(ex)
 
 
-@router.get('/{user_id}', response_model=UserSchema)
+@router.get('/{user_id}', response_model=UserSchemaResponse)
 def get_user(user_id: int):
     try:
         user = user_service.get(user_id)
@@ -30,8 +30,8 @@ def get_user(user_id: int):
         raise handle_exception(ex)
 
 
-@router.post("/", response_model=Union[UserSchema, None], status_code=status.HTTP_201_CREATED)
-def add_user(user: UserCreateSchema):
+@router.post("/", response_model=Union[UserSchemaResponse, None], status_code=status.HTTP_201_CREATED)
+def add_user(user: UserCreateSchemaInput):
     try:
         if user_service.get_by_email(user.email):
             raise HTTPException(
@@ -47,8 +47,8 @@ def add_user(user: UserCreateSchema):
         raise handle_exception(ex)
 
 
-@router.put("/", response_model=Union[UserSchema, None])
-def update_user(user: UserSchema):
+@router.put("/", response_model=Union[UserSchemaResponse, None])
+def update_user(user: UserSchemaResponse):
     try:
         user = user_service.update(user.dict())
         return user.serialize()
@@ -61,6 +61,23 @@ def update_user(user: UserSchema):
 def delete_user(user_id: int):
     try:
         user_service.delete(user_id)
+    except Exception as ex:
+        raise handle_exception(ex)
+
+
+@router.post("/{user_id}/token-cm", response_model=Union[TokenFcmSchemaResponse, None])
+def add_token_fcm(user_id: int, token: TokenFcmSchemaInput):
+    try:
+        user = user_service.add_token_fcm(user_id, token.dict())
+        return user.serialize()
+    except Exception as ex:
+        raise handle_exception(ex)
+
+
+@router.delete("/{user_id}/token-cm", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
+def delete_token_fcm(user_id: int):
+    try:
+        user_service.delete_token_fcm(user_id)
     except Exception as ex:
         raise handle_exception(ex)
 
