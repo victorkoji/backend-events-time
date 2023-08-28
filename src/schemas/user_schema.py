@@ -3,7 +3,15 @@ from datetime import date
 from pydantic import BaseModel
 
 
-class UserCreateSchema(BaseModel):
+class TokenFcmSchemaInput(BaseModel):
+    token_fcm: str
+
+
+class TokenFcmSchemaResponse(BaseModel):
+    token_fcm: str
+
+
+class UserCreateSchemaInput(BaseModel):
     first_name: str
     last_name: str
     birth_date: date
@@ -13,7 +21,7 @@ class UserCreateSchema(BaseModel):
     token_fcm: Optional[float] = None
 
 
-class UserSchema(BaseModel):
+class UserSchemaResponse(BaseModel):
     id: int
     first_name: str
     last_name: str
