@@ -89,7 +89,7 @@ class UserService:
         try:
             user.save()
         except:
-            raise DatabaseError('Could not delete!')
+            raise DatabaseError('Could not added!')
 
         return user
 

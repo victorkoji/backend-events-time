@@ -1,5 +1,6 @@
 from typing import List, Union
-from fastapi import APIRouter, HTTPException, Response, status
+from fastapi import APIRouter, HTTPException, Response, status, Depends
+from controllers.dependencies.user_dependency import get_user_token
 from services.user_service import UserService
 from schemas.user_schema import UserCreateSchemaInput, UserSchemaResponse, TokenFcmSchemaInput, TokenFcmSchemaResponse
 
@@ -11,6 +12,22 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
+@router.post("/token-fcm", response_model=Union[TokenFcmSchemaResponse, None])
+def add_token_fcm(token: TokenFcmSchemaInput, user: dict = Depends(get_user_token)):
+    try:
+        user = user_service.add_token_fcm(user['sub'], token.dict())
+        return user.serialize()
+    except Exception as ex:
+        raise handle_exception(ex)
+
+
+@router.delete("/token-fcm", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
+def delete_token_fcm(user: dict = Depends(get_user_token)):
+    try:
+        user = user_service.get(user['sub'])
+        # user_service.delete_token_fcm(user['sub'])
+    except Exception as ex:
+        raise handle_exception(ex)
 
 @router.get('/', response_model=List[UserSchemaResponse])
 def get_all_items():
@@ -63,24 +80,6 @@ def delete_user(user_id: int):
         user_service.delete(user_id)
     except Exception as ex:
         raise handle_exception(ex)
-
-
-@router.post("/{user_id}/token-cm", response_model=Union[TokenFcmSchemaResponse, None])
-def add_token_fcm(user_id: int, token: TokenFcmSchemaInput):
-    try:
-        user = user_service.add_token_fcm(user_id, token.dict())
-        return user.serialize()
-    except Exception as ex:
-        raise handle_exception(ex)
-
-
-@router.delete("/{user_id}/token-cm", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
-def delete_token_fcm(user_id: int):
-    try:
-        user_service.delete_token_fcm(user_id)
-    except Exception as ex:
-        raise handle_exception(ex)
-
 
 def handle_exception(ex):
     message_error = str(ex)
