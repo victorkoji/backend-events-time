@@ -24,8 +24,7 @@ def add_token_fcm(token: TokenFcmSchemaInput, user: dict = Depends(get_user_toke
 @router.delete("/token-fcm", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
 def delete_token_fcm(user: dict = Depends(get_user_token)):
     try:
-        user = user_service.get(user['sub'])
-        # user_service.delete_token_fcm(user['sub'])
+        user_service.delete_token_fcm(user['sub'])
     except Exception as ex:
         raise handle_exception(ex)
 
